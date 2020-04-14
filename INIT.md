@@ -1,6 +1,6 @@
 ## Proceso Inicial del proyecto EVC
 
-```bash
+```bash 
 # Install sequelize
 # https://sequelize.org/v5/manual/migrations.html
 npm install --save sequelize
