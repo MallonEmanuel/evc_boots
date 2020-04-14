@@ -1,8 +1,56 @@
 const config = require('./config')
 const twit = require('twit')
 const T = new twit(config)
-
+// 1615803264 -- team viewer emallon
 // https://www.npmjs.com/package/twit
+
+//  se define la clase Bot
+var Bot = module.exports = function(config) {
+  this.twit = new twit(config);
+};
+
+// Crea un tweet del usuario indicado en la config
+Bot.prototype.tweet = function (status, callback) {
+  if(typeof status !== 'string') {
+    return callback(new Error('tweet must be of type String'));
+  } else if(status.length > 280) {
+    return callback(new Error('tweet is too long: ' + status.length));
+  }
+  this.twit.post('statuses/update', { status: status }, callback); // error,data,resp
+};
+
+Bot.prototype.retweet = function(tweet_id, callback){
+  this.twit.post('statuses/retweet/:id',{ id: tweet_id},callback);
+}
+
+Bot.prototype.lookup = function(tweet_id, callback){
+  this.twit.post('statuses/lookup/:id',{ id: tweet_id},callback);
+}
+
+Bot.prototype.friends_list = function(params, callback){
+  this.twit.get('friends/list', params, callback);
+}
+
+Bot.prototype.followers_list = function(params, callback){
+  this.twit.get('followers/list', params, callback);
+}
+
+Bot.prototype.search_tweets = function(params, callback, res){
+  this.twit.get('search/tweets', params, (err, data, resp) => {
+    if (err) {
+      console.error('Error al intentar buscar en Twitter : '+ err);
+    }else{
+      callback(params, data, res); // save_resultado
+    }
+  });
+}
+
+
+
+var bot = new Bot(config);
+// bot.tweet('Probando Bot');
+
+
 function retweet() {
     let params = {
       q: '#CopaAmérica2020',
@@ -24,9 +72,7 @@ function retweet() {
 
 
 function postTweet(retweetId){
-    T.post('statuses/retweet/:id', {
-      id: retweetId
-    }, (err, response) => {
+    T.post('statuses/retweet/:id', { id: retweetId }, (err, response) => {
       if (response)
         console.log('Retweeted!!! ' + retweetId)
       if (err)
@@ -104,7 +150,7 @@ function tweet(params) {
     });
 } // end retweet
 
-//tweet({status:'Prueba 2',display_coordinates:true});
+// tweet({status:'Hola @Emanuel41243617 !! ',display_coordinates:true});
 
 //postTweet('1229854201255206917');
 
@@ -122,4 +168,18 @@ function search(palabra){
   })
 }
 
-search('Coronavirus');
+// search('Coronavirus');
+
+
+
+// GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
+function user_timeline(params){
+  T.get('statuses/user_timeline', params, (err, data, response) => {
+    // let tweets = data.statuses
+    if (!err) {
+      console.log(data);
+    }
+  })
+}
+
+ // user_timeline({user_id: null, screen_name: '@emanuelsm18'});

@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
-// Informacion Twitter
+// Api Twitter
 const config = require('./config')
 const twit = require('twit')
-const T = new twit(config)
+const T = new twit(config) // conexion a Twitter
 // Requerimientos express
 var express = require('express');
 var app = express();
@@ -61,24 +61,16 @@ Resultado.init({
 //   // });
 //   console.log('Tabla Resultado creada');
 // });
-
-function search_tweets(params, todo, res){
-  T.get('search/tweets', params, (err, data, response) => {
-    if (err) {
-      console.error('Error al intentar buscar en Twitter : '+ err);
-    }else{
-      todo(params, data, res);
-      //   , (err, params) =>{
-      //   Resultado.findAll({where: { busqueda: params.q }, order :[['id','DESC']]})
-      //                       .then(function (resultados){
-      //                         //  console.log(resultados);
-      //                          res.send(resultados);
-      //
-      //                       });// end save_resultado
-      // } );
-    }
-  });
-}
+//
+// function search_tweets(params, todo, res){
+//   T.get('search/tweets', params, (err, data, response) => {
+//     if (err) {
+//       console.error('Error al intentar buscar en Twitter : '+ err);
+//     }else{
+//       todo(params, data, res);
+//     }
+//   });
+// }
 
 function save_resultado(params, data, res){
   // console.log(data);
@@ -103,20 +95,12 @@ function save_resultado(params, data, res){
   res.send(resultados);
 }
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
 app.get('/agregar_usuario', function (req, res) {
   res.send('Agregando : '+ req.query.nombre + ' '+ req.query.apellido);
 });
-/*
-  Puerto Madryn - (Latitude, Longitude): -42.7667 , -65.05  =>  -42.7667,-65.05,5km
-  geocode:40.714353,-74.00597299999998,20km
-  #btv geocode:39.8,-95.583068847656,2500km
-  -RT -election power OR #vtsandy OR #vtresponse OR #frankenstorm
+var Bot = require('./bot');
+var bot = new Bot(config);
 
-*/
 app.get('/buscar', function (req, res) {
   // res.send('Buscando : '+ req.query.q ) ;
   var palabra = '', url = '';
@@ -124,39 +108,75 @@ app.get('/buscar', function (req, res) {
     palabra = '#';
   }
   palabra = palabra + req.query.q;
-  url = '/buscar?q=' + req.query.q ;
+  url = '/buscar?q=' + palabra ;
   if (req.query.geocode != null && req.query.geocode != undefined){
     url += '&geocode=' + req.query.geocode;
   }
   let params = {
      q       : palabra //+ ' geocode:-42.7667,-65.05,5km'
     ,url     : url
-    ,geocode : '-42.7667,-65.05,5km'
+    ,geocode : req.query.geocode
     ,count   : 10
   }
   console.log(params);
-  search_tweets(params, save_resultado, res);
+  bot.search_tweets(params, save_resultado, res);
 
 });
+// Actualiza en estado del usuario
+app.get('/tweet', function (req, res) {
+  bot.tweet(req.query.status, (err, data, resp) => {
+    if (err){
+      res.send({status:req.query.status, tweeted:'false', error: err});
+    }else{
+      res.send({status:req.query.status, tweeted:'true', data : data});
+    }
 
-app.get('/resultados', function (req, res) {
-  // res.send('Buscando : '+ req.query.q ) ;
-  var palabra = '';
-  if (req.query.hastag == 'S'){
-    palabra = '#';
-  }
-  palabra = palabra + req.query.q;
-  if (req.query.geocode != null && req.query.geocode != undefined){
-    // palabra = palabra +'&geocode='+ req.query.geocode;
+  });
+}); // end tweet
+// 1247534063184777200
 
-  }
-  console.log(palabra);
-  Resultado.findAll({where: { busqueda: palabra}})
-                     .then(function (resultados){
-                        // console.log(resultados);
-                        res.send(resultados);
-                      });
-});
+app.get('/retweet', function (req, res) {
+  bot.retweet(req.query.tweet_id, (err, data, resp) => {
+    if (err){
+      res.send({tweet_id: req.query.tweet_id, retweeted:'false', error: err});
+    }else{
+      res.send({tweet_id: req.query.tweet_id, retweeted:'true', data : data});
+    }
+
+  });
+}); // end retweet
+
+app.get('/lookup', function (req, res) {
+  bot.lookup(req.query.tweet_id, (err, data, resp) => {
+    if (err){
+      res.send({tweet_id: req.query.tweet_id, error: err});
+    }else{
+      res.send({tweet_id: req.query.tweet_id, data : data});
+    }
+
+  });
+}); // end retweet
+
+//
+// // debemos dejar este pedazo de codigo de lado por el momento
+// app.get('/resultados', function (req, res) {
+//   // res.send('Buscando : '+ req.query.q ) ;
+//   var palabra = '';
+//   if (req.query.hastag == 'S'){
+//     palabra = '#';
+//   }
+//   palabra = palabra + req.query.q;
+//   if (req.query.geocode != null && req.query.geocode != undefined){
+//     // palabra = palabra +'&geocode='+ req.query.geocode;
+//
+//   }
+//   console.log(palabra);
+//   Resultado.findAll({where: { busqueda: palabra}})
+//                      .then(function (resultados){
+//                         // console.log(resultados);
+//                         res.send(resultados);
+//                       });
+// });
 
 
 app.listen(3000, function () {
