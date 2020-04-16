@@ -8,25 +8,28 @@ const sequelize = new Sequelize('evc-db', 'evc-user', '12345678', {
   
 const Model = Sequelize.Model;
 
-class Tweet extends Model {}
+class Tuit extends Model {}
 
-Tweet.init({
+Tuit.init({ 
   // attributes
    text             : { type: Sequelize.STRING }
-  ,publish_date     : { type: Sequelize.STRING }
+  ,publish_date     : { type: Sequelize.DATE }
+  ,timer            : { type: Sequelize.STRING } 
+  ,user             : { type: Sequelize.STRING } 
 }, {
   sequelize,
-  modelName: 'tweets'
+  modelName: 'tuits'
   // options
 });
 
 
-Tweet.sync({ force: true }).then(() => {
+Tuit.sync({ force: true }).then(() => {
   // Now the `users` table in the database corresponds to the model definition
   // return User.create({
   //   nombre: 'John',
   //   apellido: 'Hancock'
   // });
-  console.log('Tabla Resultado creada');
+  console.log('Tabla Tuit creada');
+  process.exit(0);
 });
 

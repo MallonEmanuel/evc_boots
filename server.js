@@ -6,7 +6,7 @@ const T = new twit(config) // conexion a Twitter
 // Requerimientos express
 var express = require('express');
 var app = express();
-
+ 
 // Servidor de prueba de conexion a base de datos
 
 // Option 1: Passing parameters separately

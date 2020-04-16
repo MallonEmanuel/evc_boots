@@ -8,7 +8,7 @@ const T = new twit(config)
 var Bot = module.exports = function(config) {
   this.twit = new twit(config);
 };
-
+ 
 // Crea un tweet del usuario indicado en la config
 Bot.prototype.tweet = function (status, callback) {
   if(typeof status !== 'string') {
