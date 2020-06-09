@@ -2,7 +2,7 @@
   "name": "evc_boots",
   "version": "1.0.0",
   "description": "proyecto beca evc",
-  "main": "server.js",
+  "main": "main.js",
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",

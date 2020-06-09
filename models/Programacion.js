@@ -1,9 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
-    const Tweet = sequelize.define('tweet', {
-        text: DataTypes.STRING,
-        publish_date: DataTypes.DATE,
-        timer: DataTypes.STRING,
-        user: DataTypes.STRING,
+    const Programacion = sequelize.define('programacion', {
+      timer        : { type: DataTypes.STRING }
+     ,usr_id          : { type: DataTypes.STRING }
         // content: {
         //   type: DataTypes.TEXT,
         //   allowNull: true
@@ -18,5 +16,5 @@ module.exports = (sequelize, DataTypes) => {
     //     Tuit.belongsTo(models.author);
     // };
 
-    return Tweet;
+    return Programacion;
   }

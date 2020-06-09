@@ -1,15 +1,15 @@
-const config = require('./config')
+const bot_config = require('./bot_bot_config')
 const twit = require('twit')
-const T = new twit(config)
+const T = new twit(bot_config)
 // 1615803264 -- team viewer emallon
 // https://www.npmjs.com/package/twit
 
 //  se define la clase Bot
-var Bot = module.exports = function(config) {
-  this.twit = new twit(config);
+var Bot = module.exports = function(bot_config) {
+  this.twit = new twit(bot_config);
 };
  
-// Crea un tweet del usuario indicado en la config
+// Crea un tweet del usuario indicado en la bot_config
 Bot.prototype.tweet = function (status, callback) {
   if(typeof status !== 'string') {
     return callback(new Error('tweet must be of type String'));
@@ -47,7 +47,7 @@ Bot.prototype.search_tweets = function(params, callback, res){
 
 
 
-var bot = new Bot(config);
+var bot = new Bot(bot_config);
 // bot.tweet('Probando Bot');
 
 

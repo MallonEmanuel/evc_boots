@@ -6,16 +6,19 @@ var express = require('express');
 var faker = require('faker');
 
 var db = require('./models');
-var port = '3000'; 
+var port = '3000';
 const app = express();
 
-const config = require('./config')
+const config = require('./bot_config')
 var Bot = require('./bot');
 var bot = new Bot(config);
 
 var TweetService = require('./api/TweetService');
+var ProgramacionService = require('./api/ProgramacionService');
 
-TweetService(app,db, bot);
+TweetService(app, db, bot);
+ProgramacionService(app, db, bot);
+
 
 db.sequelize.sync({force:true}).then(() => {
     // populate author table with dummy data

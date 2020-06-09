@@ -41,6 +41,6 @@ RT @Moni_Saso: #DiaMundialDeLaSalud\nHoy nuestro reconocimiento y pleno agradeci
 
 2020-04-07
 
-1. Como realiza la busqueda por geocode
-2. Guardar todo el texto de las busquedas
-3. Armar maquina virtual (para conexion SSH)
+1. Como realiza la busqueda por geocode       
+2. Guardar todo el texto de las busquedas     
+3. Armar maquina virtual (para conexion SSH)  OK
